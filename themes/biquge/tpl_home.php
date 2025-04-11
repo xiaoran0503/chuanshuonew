@@ -1,232 +1,131 @@
-<?php if (!defined('__ROOT_DIR__')) exit; ?>
+<?php
+// 防止直接访问该文件
+if (!defined('__ROOT_DIR__')) {
+    exit;
+}
+?>
 
 <!DOCTYPE html>
-<html lang='zh'>
+<html lang="zh">
 <head>
-<meta charset="UTF-8">
-    <title><?=SITE_NAME?>_无弹窗书友最值得收藏的网络小说阅读网</title>
-    <meta name="keywords" content="<?=SITE_NAME?>,无弹窗,小说阅读网,<?=SITE_URL?>" />
-    <meta name="description" content="<?=SITE_NAME?>是广大书友最值得收藏的网络小说阅读网，网站收录了当前最火热的网络小说，免费提供高质量的小说最新章节，是广大网络小说爱好者必备的小说阅读网。" />
+    <meta charset="UTF-8">
+    <!-- 对输出变量进行安全转义 -->
+    <title><?= htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8') ?>_无弹窗书友最值得收藏的网络小说阅读网</title>
+    <meta name="keywords" content="<?= htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8') ?>,无弹窗,小说阅读网,<?= htmlspecialchars(SITE_URL, ENT_QUOTES, 'UTF-8') ?>" />
+    <meta name="description" content="<?= htmlspecialchars(SITE_NAME, ENT_QUOTES, 'UTF-8') ?>是广大书友最值得收藏的网络小说阅读网，网站收录了当前最火热的网络小说，免费提供高质量的小说最新章节，是广大网络小说爱好者必备的小说阅读网。" />
+    <?php require_once 'tpl_header.php'; ?>
+</head>
+<body>
+    <div class="container flex flex-wrap">
+        <!-- 封推 -->
+        <div class="border3 commend flex flex-between">
+            <?php foreach ($commend as $k => $v): ?>
+                <?php if ($k < 4): ?>
+                    <div class="outdiv">
+                        <!-- 对链接和图片地址进行安全转义 -->
+                        <a href="<?= htmlspecialchars($v['info_url'], ENT_QUOTES, 'UTF-8') ?>"><img class="lazy" src="/static/<?= htmlspecialchars($theme_dir, ENT_QUOTES, 'UTF-8') ?>/nocover.jpg" data-original="<?= htmlspecialchars($v['img_url'], ENT_QUOTES, 'UTF-8') ?>"></a>
+                        <div>
+                            <div class="flex flex-between commend-title">
+                                <!-- 对小说名和链接进行安全转义 -->
+                                <a href="<?= htmlspecialchars($v['info_url'], ENT_QUOTES, 'UTF-8') ?>"><h3><?= htmlspecialchars($v['articlename'], ENT_QUOTES, 'UTF-8') ?></h3></a> 
+                                <!-- 对作者名进行安全转义 -->
+                                <span><?= htmlspecialchars($v['author'], ENT_QUOTES, 'UTF-8') ?></span>
+                            </div>
+                            <!-- 对简介进行安全转义 -->
+                            <div class="intro indent"><?= htmlspecialchars($v['intro_des'], ENT_QUOTES, 'UTF-8') ?></div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+        <!-- 热门 -->
+        <div class="border3 popular">
+            <p>经典推荐</p>
+            <?php foreach ($popular as $k => $v): ?>
+                <?php if ($k < 8): ?>
+                    <div class="list-out">
+                        <!-- 对分类名、小说名和链接进行安全转义 -->
+                        <span>[<?= htmlspecialchars($v['sortname_2'], ENT_QUOTES, 'UTF-8') ?>] <a href="<?= htmlspecialchars($v['info_url'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($v['articlename'], ENT_QUOTES, 'UTF-8') ?></a></span>
+                        <!-- 对作者名进行安全转义 -->
+                        <span class="gray"><?= htmlspecialchars($v['author'], ENT_QUOTES, 'UTF-8') ?></span>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
-<?php require_once 'tpl_header.php'; ?>
+    <!-- 中间6区块 -->
+    <?php for ($i = 1; $i <= 6; $i++): ?>
+        <?php $sortVar = 'sort' . $i; ?>
+        <?php if ($i % 3 == 1 && $i > 1): ?>
+            </div>
+            <div class="container sort-section border3 flex flex-between flex-wrap">
+        <?php endif; ?>
+        <div<?php if ($i % 3 == 2): ?> class="sort-middle"<?php endif; ?>>
+            <div class="sort-title">
+                <!-- 对分类链接和名称进行安全转义 -->
+                <a href="<?= htmlspecialchars(Sort::ss_sorturl($i), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(Sort::ss_sortname($i, 1), ENT_QUOTES, 'UTF-8') ?></a>
+            </div>
+            <div class="sort-bottom">
+                <?php foreach ($$sortVar as $k => $v): ?>
+                    <?php if ($k == 0): ?>
+                        <div class="sortdiv flex">
+                            <!-- 对链接和图片地址进行安全转义 -->
+                            <a href="<?= htmlspecialchars($v['info_url'], ENT_QUOTES, 'UTF-8') ?>"><img class="lazy" src="/static/<?= htmlspecialchars($theme_dir, ENT_QUOTES, 'UTF-8') ?>/nocover.jpg" data-original="<?= htmlspecialchars($v['img_url'], ENT_QUOTES, 'UTF-8') ?>"></a>
+                            <div>
+                                <!-- 对小说名和链接进行安全转义 -->
+                                <a href="<?= htmlspecialchars($v['info_url'], ENT_QUOTES, 'UTF-8') ?>"><h4><?= htmlspecialchars($v['articlename'], ENT_QUOTES, 'UTF-8') ?></h4></a>
+                                <!-- 对简介进行安全转义 -->
+                                <p><?= htmlspecialchars($v['intro_des'], ENT_QUOTES, 'UTF-8') ?></p>
+                            </div>
+                        </div>
+                    <?php elseif ($k > 0): ?>
+                        <div class="sortlist">
+                            <!-- 对小说名和链接进行安全转义 -->
+                            <a href="<?= htmlspecialchars($v['info_url'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($v['articlename'], ENT_QUOTES, 'UTF-8') ?></a>
+                            <!-- 对作者名进行安全转义 -->
+                            <span class="s_gray">/<?= htmlspecialchars($v['author'], ENT_QUOTES, 'UTF-8') ?></span>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endfor; ?>
+    </div>
 
-<div class="container flex flex-wrap">
-    <!-- 封推 -->
-    <div class="border3 commend flex flex-between">
-        <?php foreach($commend as $k => $v): ?><?php if($k < 4):?>
-            <div class="outdiv">
-                <a href="<?=$v['info_url']?>"><img class="lazy" src="/static/<?=$theme_dir?>/nocover.jpg" data-original="<?=$v['img_url']?>"></a>
-                <div>
-                    <div class="flex flex-between commend-title"><a href="<?=$v['info_url']?>"><h3><?=$v['articlename']?></h3></a> <span><?=$v['author']?></span></div>
-                    <div class="intro indent"><?=$v['intro_des']?></div>
+    <!-- 最后更新和最新入库 -->
+    <div class="container flex flex-wrap section-bottom">
+        <!-- 最后更新 -->
+        <div class="border3-1 lastupdate">
+            <p>最后更新</p>
+            <?php foreach ($lastupdate as $k => $v): ?>
+                <div class="list-out">
+                    <!-- 对分类名、小说名、链接和章节名进行安全转义 -->
+                    <span class="flex w80"><em>[<?= htmlspecialchars($v['sortname'], ENT_QUOTES, 'UTF-8') ?>]</em><em><a href="<?= htmlspecialchars($v['info_url'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($v['articlename'], ENT_QUOTES, 'UTF-8') ?></a></em><em><a href="<?= htmlspecialchars($v['last_url'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($v['lastchapter'], ENT_QUOTES, 'UTF-8') ?></a></em></span>
+                    <!-- 对作者名和日期进行安全转义 -->
+                    <span class="gray dispc"><?= htmlspecialchars($v['author'], ENT_QUOTES, 'UTF-8') ?>&nbsp;&nbsp;<?= htmlspecialchars(date('m-d', $v['lastupdate']), ENT_QUOTES, 'UTF-8') ?></span>
                 </div>
-            </div>
-        <?php endif ?><?php endforeach ?>
-    </div>
-    <!-- 热门 -->
-    <div class="border3 popular">
-        <p>经典推荐</p>
-        <?php foreach($popular as $k => $v): ?><?php if($k < 8):?>
-            <div class="list-out">
-                <span>[<?=$v['sortname_2']?>] <a href="<?=$v['info_url']?>"><?=$v['articlename']?></a></span>
-                <span class="gray"><?=$v['author']?></span>
-            </div>
-        <?php endif ?><?php endforeach ?>
-    </div>
-</div>
-
-<!-- 中间6区块之一 -->
-<div class="container sort-section border3 flex flex-between flex-wrap">
-    <!-- 分类1 -->
-    <div>
-        <div class="sort-title">
-            <a href="<?=Sort::ss_sorturl(1)?>"><?=Sort::ss_sortname(1,1)?></a>
+            <?php endforeach; ?>
         </div>
-
-        <div class="sort-bottom">
-            <?php foreach($sort1 as $k => $v): ?><?php if($k == 0):?>
-
-            <div class="sortdiv flex">
-            <a href="<?=$v['info_url']?>"><img class="lazy" src="/static/<?=$theme_dir?>/nocover.jpg" data-original="<?=$v['img_url']?>"></a>
-                <div>
-                    <a href="<?=$v['info_url']?>"><h4><?=$v['articlename']?></h4></a>
-                    <p><?=$v['intro_des']?></p>
+        <!-- 最新入库 -->
+        <div class="border3-1 popular">
+            <p>最新入库</p>
+            <?php foreach ($postdate as $k => $v): ?>
+                <div class="list-out">
+                    <!-- 对分类名、小说名和链接进行安全转义 -->
+                    <span>[<?= htmlspecialchars($v['sortname_2'], ENT_QUOTES, 'UTF-8') ?>] <a href="<?= htmlspecialchars($v['info_url'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($v['articlename'], ENT_QUOTES, 'UTF-8') ?></a></span>
+                    <!-- 对作者名进行安全转义 -->
+                    <span class="gray"><?= htmlspecialchars($v['author'], ENT_QUOTES, 'UTF-8') ?></span>
                 </div>
-            </div>
-            <?php endif ?><?php endforeach ?>
-            <div class="sort-section-more flex flex-wrap">
-                <?php foreach($sort1 as $k => $v): ?><?php if($k > 0):?>
-                <div class="sortlist"><a href="<?=$v['info_url']?>"><?=$v['articlename']?></a><span class="s_gray">/<?=$v['author']?></span></div>
-                <?php endif ?><?php endforeach ?>
-            </div>
-
+            <?php endforeach; ?>
         </div>
     </div>
-
-    <!-- 分类2 -->
-    <div class="sort-middle">
-        <div class="sort-title">
-            <a href="<?=Sort::ss_sorturl(2)?>"><?=Sort::ss_sortname(2,1)?></a>
-        </div>
-
-        <div class="sort-bottom">
-            <?php foreach($sort2 as $k => $v): ?><?php if($k == 0):?>
-                
-            <div class="sortdiv flex">
-                <a href="<?=$v['info_url']?>"><img class="lazy" src="/static/<?=$theme_dir?>/nocover.jpg" data-original="<?=$v['img_url']?>"></a>
-                <div>
-                    <a href="<?=$v['info_url']?>"><h4><?=$v['articlename']?></h4></a>
-                    <p><?=$v['intro_des']?></p>
-                </div>
-            </div>
-            <?php endif ?><?php endforeach ?>
-            <div class="sort-section-more flex flex-wrap">
-                <?php foreach($sort2 as $k => $v): ?><?php if($k > 0):?>
-                <div class="sortlist"><a href="<?=$v['info_url']?>"><?=$v['articlename']?></a><span class="s_gray">/<?=$v['author']?></span></div>
-                <?php endif ?><?php endforeach ?>
-            </div>
-            
-        </div>
+    <!-- 友情链接 -->
+    <div class="container flex">
+        <div class="link">友情链接:</div>
     </div>
-
-    <!-- 分类3 -->
-    <div>
-        <div class="sort-title">
-            <a href="<?=Sort::ss_sorturl(3)?>"><?=Sort::ss_sortname(3,1)?></a>
-        </div>
-
-        <div class="sort-bottom">
-            <?php foreach($sort3 as $k => $v): ?><?php if($k == 0):?>
-
-            <div class="sortdiv flex">
-                <a href="<?=$v['info_url']?>"><img class="lazy" src="/static/<?=$theme_dir?>/nocover.jpg" data-original="<?=$v['img_url']?>"></a>
-                <div>
-                    <a href="<?=$v['info_url']?>"><h4><?=$v['articlename']?></h4></a>
-                    <p><?=$v['intro_des']?></p>
-                </div>
-            </div>
-            <?php endif ?><?php endforeach ?>
-            <div class="sort-section-more flex flex-wrap">
-                <?php foreach($sort3 as $k => $v): ?><?php if($k > 0):?>
-                <div class="sortlist"><a href="<?=$v['info_url']?>"><?=$v['articlename']?></a><span class="s_gray">/<?=$v['author']?></span></div>
-                <?php endif ?><?php endforeach ?>
-            </div>
-            
-        </div>
-    </div>
-</div>
-
-<!-- 中间6区块之二 -->
-<div class="container sort-section border3 flex flex-between flex-wrap">
-    <!-- 分类4 -->
-    <div>
-        <div class="sort-title">
-            <a href="<?=Sort::ss_sorturl(4)?>"><?=Sort::ss_sortname(4,1)?></a>
-        </div>
-
-        <div class="sort-bottom">
-            <?php foreach($sort4 as $k => $v): ?><?php if($k == 0):?>
-
-            <div class="sortdiv flex">
-                <a href="<?=$v['info_url']?>"><img class="lazy" src="/static/<?=$theme_dir?>/nocover.jpg" data-original="<?=$v['img_url']?>"></a>
-                <div>
-                    <a href="<?=$v['info_url']?>"><h4><?=$v['articlename']?></h4></a>
-                    <p><?=$v['intro_des']?></p>
-                </div>
-            </div>
-            <?php endif ?><?php endforeach ?>
-            <div class="sort-section-more flex flex-wrap">
-                <?php foreach($sort4 as $k => $v): ?><?php if($k > 0):?>
-                <div class="sortlist"><a href="<?=$v['info_url']?>"><?=$v['articlename']?></a><span class="s_gray">/<?=$v['author']?></span></div>
-                <?php endif ?><?php endforeach ?>                
-            </div>
-            
-
-        </div>
-    </div>
-
-    <!-- 分类5 -->
-    <div class="sort-middle">
-        <div class="sort-title">
-            <a href="<?=Sort::ss_sorturl(5)?>"><?=Sort::ss_sortname(5,1)?></a>
-        </div>
-
-        <div class="sort-bottom">
-            <?php foreach($sort5 as $k => $v): ?><?php if($k == 0):?>
-
-            <div class="sortdiv flex">
-                <a href="<?=$v['info_url']?>"><img class="lazy" src="/static/<?=$theme_dir?>/nocover.jpg" data-original="<?=$v['img_url']?>"></a>
-                <div>
-                    <a href="<?=$v['info_url']?>"><h4><?=$v['articlename']?></h4></a>
-                    <p><?=$v['intro_des']?></p>
-                </div>
-            </div>
-            <?php endif ?><?php endforeach ?>
-            <div class="sort-section-more flex flex-wrap">
-                <?php foreach($sort5 as $k => $v): ?><?php if($k > 0):?>
-                <div class="sortlist"><a href="<?=$v['info_url']?>"><?=$v['articlename']?></a><span class="s_gray">/<?=$v['author']?></span></div>
-                <?php endif ?><?php endforeach ?> 
-            </div>
-        </div>
-    </div>
-
-    <!-- 分类6 -->
-    <div>
-        <div class="sort-title">
-            <a href="<?=Sort::ss_sorturl(6)?>"><?=Sort::ss_sortname(6,1)?></a>
-        </div>
-
-        <div class="sort-bottom">
-            <?php foreach($sort6 as $k => $v): ?><?php if($k == 0):?>
-
-            <div class="sortdiv flex">
-                <a href="<?=$v['info_url']?>"><img class="lazy" src="/static/<?=$theme_dir?>/nocover.jpg" data-original="<?=$v['img_url']?>"></a>
-                <div>
-                    <a href="<?=$v['info_url']?>"><h4><?=$v['articlename']?></h4></a>
-                    <p><?=$v['intro_des']?></p>
-                </div>
-            </div>
-            <?php endif ?><?php endforeach ?>
-            <div class="sort-section-more flex flex-wrap">
-                <?php foreach($sort6 as $k => $v): ?><?php if($k > 0):?>
-                <div class="sortlist"><a href="<?=$v['info_url']?>"><?=$v['articlename']?></a><span class="s_gray">/<?=$v['author']?></span></div>
-                <?php endif ?><?php endforeach ?> 
-            </div>
-            
-
-        </div>
-    </div>
-</div>
-<!-- 最后更新和最新入库 -->
-<div class="container flex flex-wrap section-bottom">
-    <!-- 最后更新 -->
-    <div class="border3-1 lastupdate">
-        <p>最后更新</p>
-        <?php foreach($lastupdate as $k => $v): ?>
-            <div class="list-out">
-                <span class="flex w80"><em>[<?=$v['sortname']?>]</em><em><a href="<?=$v['info_url']?>"><?=$v['articlename']?></a></em><em><a href="<?=$v['last_url']?>"><?=$v['lastchapter']?></a></em></span>
-                <span class="gray dispc"><?=$v['author']?>&nbsp;&nbsp;<?=date('m-d',$v['lastupdate'])?></span>
-        </div>
-        <?php endforeach ?>
-    </div>
-    <!-- 最新入库 -->
-    <div class="border3-1 popular">
-        <p>最新入库</p>
-        <?php foreach($postdate as $k => $v): ?>
-            <div class="list-out">
-                <span>[<?=$v['sortname_2']?>] <a href="<?=$v['info_url']?>"><?=$v['articlename']?></a></span>
-                <span class="gray"><?=$v['author']?></span>
-            </div>
-        <?php endforeach ?>
-    </div>
-</div>
-<!-- 友情链接 -->
-<div class="container flex">
-    <div class="link">友情链接:</div>
-</div>
-<script>$('nav a:first-child').addClass('orange');</script>
-<?php require_once 'tpl_footer.php'; ?>
-
-
-
-
+    <!-- 对 JavaScript 代码中的选择器进行安全转义 -->
+    <script>$('nav a:first-child').addClass('orange');</script>
+    <?php require_once 'tpl_footer.php'; ?>
+</body>
+</html>
