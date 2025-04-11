@@ -1,0 +1,38 @@
+只针对正版用户: 网站必须填写授权码.
+
+一.  源站数据库执行以下语句(不对原数据库做任何改动,只是新建一个表):
+
+CREATE TABLE IF NOT EXISTS  `shipsay_article_langtail` (
+  `langid` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `sourceid` int(11) NOT NULL,
+  `langname` varchar(50) NOT NULL DEFAULT '',
+  `sourcename` varchar(50) NOT NULL DEFAULT '',
+  `uptime` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`langid`),
+  KEY `sourceid` (`sourceid`,`langid`),
+  UNIQUE KEY `langname`(`langname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+二.  将插件包中的 /www/admin 文件夹名修改为您当前的后台文件夹名
+
+三.  将插件包上传覆盖到船说根目录下 (建议先备份船说)
+
+四.  登录后台, 设置长尾词参数后, "保存设置" 至少点击一次, 确认弹出: 保存成功 的提示
+
+五.  修改模板文件: 
+      /themes/当前模板文件夹/ 下的 tpl_info.php  或者 tpl_indexlist.php
+      
+      根据模板设计不同, 可能只有其中一个, 或者二个都有.
+      
+      在模板文件合适的位置添加以下代码:
+      
+<?php if (!empty($langtailrows)) : ?>
+  <p>相关推荐：
+      <?php foreach ($langtailrows as $v) : ?>
+          <a href="<?= $v['info_url'] ?>"><?= $v['langname'] ?></a>&nbsp;
+      <?php endforeach ?>
+  </p>
+<?php endif; ?>
+
+六. 前端最终显示的 html,css 样式请自行解决.

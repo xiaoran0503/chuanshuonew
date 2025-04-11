@@ -1,0 +1,25 @@
+升级日志 : https://www.shipsay.com/archives/132/
+
+升级步骤 ( 保留当前设置 ):
+
+1. 备份当前网站配置 /shipsay/configs
+
+2. 将后台文件夹名 ( admin ) 改为你现在的后台文件夹名
+
+3. 上传新版本覆盖, 将刚才备份好的 /shipsay/configs 再覆盖到新版本
+
+4. 进入后台, 检查所有参数是否配置正确, 就算不做任何改动, 也请保存配置一次 ( 重要 ).
+
+
+-------------------
+
+其他: 
+  
+如'搜索记录'及"章节报错" 等功能无法使用时, 在数据库中导入:  /sql/update.sql
+  
+分表版用户 如数据库链接测试正常, 但无小说数据, 在数据库中执行以下sql语句. ( 先备份 )
+
+ALTER TABLE `shipsay_article_article`   
+ADD COLUMN  `ratenum` int(11) unsigned NOT NULL DEFAULT '0',
+ADD COLUMN  `ratesum` int(11) unsigned NOT NULL DEFAULT '0', 
+ADD COLUMN `source` varchar(100) NOT NULL DEFAULT '';

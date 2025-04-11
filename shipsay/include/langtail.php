@@ -1,0 +1,73 @@
+<?php $langtailrows=array();
+$langsql='SELECT * FROM shipsay_article_langtail WHERE sourceid='.$sourceid.' ORDER BY uptime DESC';
+if(isset($redis)&&$redis->ss_get($langsql))
+{
+	$langtailrows=$redis->ss_get($langsql);
+}
+else
+{
+	$langres=$db->ss_query($langsql);
+	if($langres->num_rows)
+	{
+		$k=0;
+		while($row=mysqli_fetch_assoc($langres))
+		{
+			$langtailrows[$k]['langname']=$row['langname'];
+			$langtailrows[$k]['uptime']=$row['uptime'];
+			if($is_multiple)$row['langid']=ss_newid($row['langid']);
+			$langtailrows[$k]['info_url']=Url::info_url($row['langid'],true);
+			$langtailrows[$k]['index_url']=Url::index_url($row['langid'],1,true);
+			$k++;
+		}
+		if(time()-intval($langtailrows[0]['uptime'])>=intval($langtail_catch_cycle)*24*3600)
+		{
+			$upsql=get_upsql($sourceid,$sourcename);
+			$db->ss_query($upsql);
+		}
+		;
+		if(isset($redis))$redis->ss_setex($langsql,$langtail_cache_time,$langtailrows);
+	}
+	else
+	{
+		$upsql=get_upsql($sourceid,$sourcename);
+		$db->ss_query($upsql);
+		$first_res=$db->ss_query($langsql);
+		if($first_res->num_rows)
+		{
+			$k=0;
+			while($row=mysqli_fetch_assoc($first_res))
+			{
+				$langtailrows[$k]['langname']=$row['langname'];
+				$langtailrows[$k]['uptime']=$row['uptime'];
+				if($is_multiple)$row['langid']=ss_newid($row['langid']);
+				$langtailrows[$k]['info_url']=Url::info_url($row['langid'],true);
+				$langtailrows[$k]['index_url']=Url::index_url($row['langid'],1,true);
+				$k++;
+			}
+			if(isset($redis))$redis->ss_setex($langsql,$langtail_cache_time,$langtailrows);
+		}
+	}
+}
+function get_upsql($sourceid,$sourcename)
+{
+	$upsql='';
+	$langapi='http://suggestion.baidu.com/su?wd='.$sourcename;
+	$langhtml=Text::ss_get_contents($langapi);
+	$langhtml=mb_convert_encoding($langhtml,'UTF-8','GBK');
+	preg_match('#s:\[(.+?)\]#',$langhtml,$matches);
+	if($matches[1])
+	{
+		$langstr=str_replace('"','',$matches[1]);
+		$langarr=explode(',',$langstr);
+		$uptime=time();
+		$upsql="INSERT IGNORE INTO shipsay_article_langtail (sourceid,langname,sourcename,uptime) VALUES ";
+		foreach($langarr as $v)
+		{
+			$v=trim($v);
+			$upsql.="('$sourceid','$v','$sourcename','$uptime'),";
+		}
+		$upsql=rtrim($upsql,',');
+	}
+	return $upsql;
+}
+?>

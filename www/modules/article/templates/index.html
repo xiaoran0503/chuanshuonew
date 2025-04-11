@@ -1,0 +1,20 @@
+{?section name=i loop=$chapterrows?}
+	{?if $chapterrows[i].chaptertype > 0?}
+		{?if $i['order'] > 1?}</ul>{?/if?}
+		<div class="volume">
+		{?$chapterrows[i].chaptername?}
+		{?if $chapterrows[i].isvip == 0?}<span>【<a href="{?$static_url?}/showvolume.php?aid={?$articleid?}&vid={?$chapterrows[i].chapterid?}">分卷阅读</a>】</span>{?/if?}
+		</div>
+		{?if $i['order'] < $i['count']?}<ul class="chapters">{?/if?}
+	{?else?}
+		{?if $i['order'] == 1?}<ul class="chapters">{?/if?}
+		<li class="chapter">
+		{?if $chapterrows[i].isvip > 0?}
+		<em>VIP</em><a href="{?$chapterrows[i].url_chapter?}" title="{?$chapterrows[i].lastupdate|date:'Y-m-d H:i'?}更新，共{?$chapterrows[i].size_c?}字，价格：{?$chapterrows[i].saleprice?}">{?$chapterrows[i].chaptername?}</a>
+		{?else?}
+		<a href="{?$chapterrows[i].url_chapter?}" title="{?$chapterrows[i].lastupdate|date:'Y-m-d H:i'?}更新，共{?$chapterrows[i].size_c?}字">{?$chapterrows[i].chaptername?}</a>
+		{?/if?}
+		</li>
+		{?if $i['order'] == $i['count']?}</ul>{?/if?}
+	{?/if?}
+{?/section?}

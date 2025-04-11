@@ -1,0 +1,9 @@
+Options +FollowSymlinks -Multiviews
+RewriteEngine On
+RewriteRule ^sitemap/sitemap_([0-9]+).xml$  sitemap/ss_sitemap.php?page=$1  
+RewriteRule ^sitemap/sitemap.xml$  sitemap/ss_sitemap.php
+RewriteRule ^sitemap/sm_sitemap_([0-9]+).xml$  sitemap/sm_sitemap.php?page=$1  
+RewriteRule ^sitemap/sm_sitemap.xml$  sitemap/sm_sitemap.php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php [QSA,PT,L]

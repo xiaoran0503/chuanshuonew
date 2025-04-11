@@ -1,0 +1,104 @@
+******************
+
+郑重声明:
+
+ 船说本身不带采集, 也不支持采集, 不对采集做任何技术支持.
+
+*******************
+
+
+
+
+使用环境: php5.6 - php8.x  (开发环境php7.3) 
+
+使用教程, 购买模板: https://www.shipsay.com/archives/62/ ( 第一次购买程序后送50元模板代金券 )
+
+
+1. 上传三个文件夹 ( www, shipsay, themes ) 到服务器
+
+
+2. 将网站的入口文件指向 /www/index.php (或运行目录用 /www), 宝塔用户请"关闭防跨站攻击"
+
+
+3. 建立数据库: ( 建子站,请跳过这步 )
+
+  3.1、使用船说做源站: 
+    新建空白数据库
+      导入 /sql/船说优化版.sql ( 或 /sql/船说分表版.sql )
+      所有选择编码的地方都选择 utf8
+
+  3.2、使用杰奇做源站
+    在杰奇数据库中导入 /sql/update.sql
+  
+     
+4. 配置服务器伪静态 ( 伪静态规则在最后 )
+
+
+5. 浏览器打开 http://你的域名/admin/ 进入后台, 完成最后配置.
+
+
+其他: 
+  - 免维护站点地图 
+      访问地址: 
+        百度: http://你的域名/sitemap/sitemap.xml
+        神马: http://你的域名/sitemap/sm_sitemap.xml
+      物理文件:  /www/sitemap/, 可点开文件看使用说明.
+ 
+  - 船说不限制子站数量,IP,域名等. 但数据库服务器只能是一台 (如需更多的服务器来放置数据库,可购买授权)
+  
+  - 考虑到服务器搬家, 授权码每3个月可免费更换一次
+  
+  - 版本升级日志: https://www.shipsay.com/archives/132/ ( 有些问题可以在升级日志中得到解决 )
+
+
+********* 伪静态规则 **********
+
+Nginx 伪静态
+
+rewrite ^/sitemap/sitemap_([0-9]+).xml$  /sitemap/ss_sitemap.php?page=$1;
+rewrite ^/sitemap/sitemap.xml$  /sitemap/ss_sitemap.php;
+rewrite ^/sitemap/sm_sitemap_([0-9]+).xml$  /sitemap/sm_sitemap.php?page=$1;
+rewrite ^/sitemap/sm_sitemap.xml$  /sitemap/sm_sitemap.php;
+if (!-d $request_filename){
+	set $rule_0 1$rule_0;
+}
+if (!-f $request_filename){
+	set $rule_0 2$rule_0;
+}
+if ($rule_0 = "21"){
+	rewrite ^/(.*)$ /index.php last;
+}
+
+--------------------------------------
+IIS 伪静态
+
+<?xml version="1.0" encoding="UTF-8"?>
+<rules>
+    <rule name="ShipSay SiteMap for ss_page">
+        <match url="^sitemap/sitemap_([0-9]+).xml$" ignoreCase="false" />
+        <action type="Rewrite" url="sitemap/ss_sitemap.php?page={R:1}" appendQueryString="false" />
+    </rule>
+    <rule name="ShipSay SiteMap for ss_index">
+        <match url="^sitemap/sitemap.xml$" ignoreCase="false" />
+        <action type="Rewrite" url="sitemap/ss_sitemap.php" />
+    </rule>
+    <rule name="ShipSay SiteMap for sm_page">
+        <match url="^sitemap/sm_sitemap_([0-9]+).xml$" ignoreCase="false" />
+        <action type="Rewrite" url="sitemap/sm_sitemap.php?page={R:1}" appendQueryString="false" />
+    </rule>
+    <rule name="ShipSay SiteMap for sm_index">
+        <match url="^sitemap/sm_sitemap.xml$" ignoreCase="false" />
+        <action type="Rewrite" url="sitemap/sm_sitemap.php" />
+    </rule>    
+    <rule name="ShipSay CMS" stopProcessing="true">
+        <match url="^(.*)$" ignoreCase="false" />
+        <conditions logicalGrouping="MatchAll">
+            <add input="{REQUEST_FILENAME}" matchType="IsDirectory" ignoreCase="false" negate="true" />
+            <add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" negate="true" />
+        </conditions>
+        <action type="Rewrite" url="index.php" appendQueryString="true" />
+    </rule>
+</rules>
+
+--------------------------------------
+Apache 伪静态: 无需设置.
